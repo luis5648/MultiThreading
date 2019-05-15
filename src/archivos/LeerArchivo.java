@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package archivos;
 
 import java.io.File;
@@ -17,13 +13,13 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author c106
+ * @author CODE.zip
  */
 public class LeerArchivo {
 
     String nombre;
 
-    public String holi(String nombre_archivo) {
+    public String[] holi(String nombre_archivo[] ) {
         LeerArchivo m = new LeerArchivo();
         String path = "Origen";
 
@@ -37,11 +33,11 @@ public class LeerArchivo {
                 files = listOfFiles[i].getName();
 
            
-                nombre_archivo = files;
+                nombre_archivo[i] = files;
             }
 
         }
         
-        return nombre_archivo;
+        return nombre_archivo;    
     }
 }
