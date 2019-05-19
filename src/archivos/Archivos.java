@@ -1,12 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package archivos;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -31,14 +30,23 @@ public class Archivos {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
+    static ArrayList<String> rutas = new ArrayList<String>();
+    public static ArrayList<String> ruras = new ArrayList<String>();
+    MakerFiles l = new MakerFiles();
+    
     public static void main(String... args) throws IOException {
-      try {
-
-            Archivo();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Archivos.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//      try {
+//
+//            Archivo();
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(Archivos.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+        File file = new File("prueba");
+        Archivos c = new Archivos();
+        
+        
 
     }
 
@@ -73,6 +81,7 @@ public class Archivos {
         }
 
         TimerTask repeatedTask = new TimerTask() {
+            @Override
             public void run() {
                 String m = null;
                 String s = "Actualizacion";
@@ -99,6 +108,69 @@ public class Archivos {
         Thread.sleep(7000);
         executor.shutdown();
     }
+    
+    
+    
+    
+     public void recorrido(File file, File Destino) throws IOException {
+        for (File f : file.listFiles()) {
+            if (f.isDirectory()) {
+
+                CorregirRuta ruta = new CorregirRuta(f.getPath(), "\\", "\\\\");
+                String co = ruta.obtenerRutaCorregidaWindows();
+
+                String trozarRuta = co.substring(7, co.length());
+
+                Destino = new File("respaldo" + trozarRuta);
+
+                String rutacompleta = Destino + trozarRuta;
+                rutas.add(rutacompleta);
+                Destino.mkdir();
+
+                //System.out.println("Carpeta"+f.getPath());
+                System.out.println("Entrada");
+                recorrido(f, Destino);
+                System.out.println("Saliendo...");
+
+            } else {
+                CorregirRuta ruta = new CorregirRuta(f.getPath(), "\\", "\\\\");
+                String co = ruta.obtenerRutaCorregidaWindows();
+
+                String trozarRuta = co.substring(7, co.length());
+                Destino = new File("respaldo\\" + trozarRuta);
+                String rutacompleta = Destino + "\\" + trozarRuta;
+                rutas.add(rutacompleta);
+                File prue = new File(co);
+                copiarArchivos(prue, Destino);
+
+                System.out.println("ruta " + co);
+
+            }
+        }
+
+    }
+    
+    
+    
+      public void copiarArchivos(File pruebaOrigen, File respaldoDestino) throws IOException {
+        try {
+            FileInputStream in = new FileInputStream(pruebaOrigen);
+
+            FileOutputStream out = new FileOutputStream(respaldoDestino);
+            int c;
+            while ((c = in.read()) != -1) {
+                out.write(c);
+            }
+
+            in.close();
+            out.close();
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Archivos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+      
+      
 
     public void guardarArchivo(String msj) {
         String s = "Actualizacion";
@@ -108,16 +180,77 @@ public class Archivos {
 
         try {
             FileWriter fw = new FileWriter(f, true);
-            BufferedWriter bw = new BufferedWriter(fw);
-            PrintWriter pw = new PrintWriter(bw);
-            pw.append(mensaje);
-            pw.close();
-            bw.close();
+            try (BufferedWriter bw = new BufferedWriter(fw); 
+                    PrintWriter pw = new PrintWriter(bw)) {
+                pw.append(mensaje);
+            }
 
         } catch (IOException e) {
             System.err.println("error" + e);
         }
 
+    }
+    
+    
+    
+        public void verificar(File Origen, File Destino) throws IOException {
+        for (File f: Origen.listFiles()) {
+            if(f.isDirectory()){
+                CorregirRuta co= new CorregirRuta(f.getPath(),"\\","\\\\");
+                String rutaC=co.obtenerRutaCorregidaWindows();
+                String Cortarura=rutaC.substring(7,rutaC.length());
+                System.out.println("cocococo"+Cortarura);
+                Destino= new File("respaldo"+Cortarura);
+                if(!Destino.exists()){
+                   l.guardarCuenta("Se agrego la carpeta:: "+Destino.getPath()+" "+new Date()+"\n"," archivo.txt");
+                    Destino.mkdir();
+                }
+                verificar(f, Destino);
+            }else{
+                CorregirRuta co= new CorregirRuta(f.getPath(),"\\","\\\\");
+                String rutaC=co.obtenerRutaCorregidaWindows();
+                String Cortarura=rutaC.substring(7,rutaC.length());
+                Destino=new File("respaldo"+Cortarura);
+                if(!Destino.exists()){
+                    MakerFiles.guardarCuenta("Se agrego el archivo: "+Destino.getPath()+" "+new Date()+"\n", "archivo.txt");
+                    File prue1 = new File(rutaC);
+                    copiarArchivos(prue1, Destino);
+                }
+            }
+        }
+        
+    }
+    
+    
+    
+       public void verificarRespaldo(File Origen,File Destino){
+        
+       for (File f:Origen.listFiles()) {
+            
+            if(f.isDirectory()){
+                System.out.println(f.getPath());
+                CorregirRuta co= new CorregirRuta(f.getPath(),"\\","\\\\");
+                String rutaC=co.obtenerRutaCorregidaWindows();
+                String Cortarura=rutaC.substring(9,rutaC.length());
+                System.out.println("aaaaaaaaaaaa: "+Cortarura);
+                Origen=new File("prueba"+Cortarura);
+                if(!Origen.exists()){
+                   MakerFiles.guardarCuenta(" se elimino la carpeta:"+f.getPath()+" "+new Date()+"\n","archivo.txt");
+                    f.delete();
+                }
+                verificarRespaldo(Origen,f);
+            }else{
+                CorregirRuta co= new CorregirRuta(f.getPath(),"\\","\\\\");
+                String rutaC=co.obtenerRutaCorregidaWindows();
+                String Cortarura=rutaC.substring(9,rutaC.length());
+                Origen=new File("Origen"+Cortarura);
+                if(!Origen.exists()){
+                    MakerFiles.guardarCuenta("se elimino el archivo: "+f.getPath()+" "+new Date()+"\n","archivo.txt");
+                    f.delete();
+                }
+                
+            }
+        }
     }
 
 }

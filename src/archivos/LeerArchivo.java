@@ -2,14 +2,7 @@
 package archivos;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.CopyOption;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
-import javax.swing.JOptionPane;
+
 
 /**
  *
@@ -19,7 +12,7 @@ public class LeerArchivo {
 
     String nombre;
 
-    public String[] holi(String nombre_archivo[] ) {
+    public String[] readFile(String nombre_archivo[] ) {
         LeerArchivo m = new LeerArchivo();
         String path = "Origen";
 
