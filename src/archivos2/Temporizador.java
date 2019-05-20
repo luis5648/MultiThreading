@@ -1,13 +1,8 @@
-package archivos;
+package archivos2;
 
+import archivos.Archivos;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.ShutdownChannelGroupException;
-import java.util.Date;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -41,8 +36,8 @@ public class Temporizador {
             @Override
             public void run() {
                 try {
-                    File raiz = new File("prueba");
-                    File respaldo = new File("respaldo");
+                    File raiz = new File("Origen");
+                    File respaldo = new File("Destino");
 
                     archivos.recorrido(raiz, respaldo);
                 } catch (IOException ex) {
@@ -51,10 +46,10 @@ public class Temporizador {
             }
         };
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
-        long delay = 10000L;
-        long period = 5000L;
-        executor.scheduleAtFixedRate(task, delay, period, TimeUnit.MILLISECONDS);
-        Thread.sleep(16000);
+        long delay = 1L;
+        long period = 3L;
+        executor.scheduleAtFixedRate(task, delay, period, TimeUnit.SECONDS);
+        Thread.sleep(7000);
         executor.shutdown();
 
     }
@@ -64,8 +59,8 @@ public class Temporizador {
             @Override
             public void run() {
                 try {
-                    File raiz = new File("prueba");
-                    File respaldo = new File("respaldo");
+                    File raiz = new File("Origen");
+                    File respaldo = new File("Destino");
                     c.verificar(raiz, respaldo);
                     c.verificarRespaldo(raiz, respaldo);
                 } catch (IOException ex) {
@@ -75,10 +70,10 @@ public class Temporizador {
             }
         };
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(3);
-        long delay = 16000L;
-        long period =60000L;
-        executor.scheduleAtFixedRate(timer, delay, period, TimeUnit.MILLISECONDS);
-        Thread.sleep(196000);
+        long delay = 1L;
+        long period =3L;
+        executor.scheduleAtFixedRate(timer, delay, period, TimeUnit.SECONDS);
+        Thread.sleep(7000);
         executor.shutdown();
         
     }

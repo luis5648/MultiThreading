@@ -1,4 +1,4 @@
-package archivos;
+package archivos2;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,7 +14,7 @@ public class MakerFiles {
 
         public  static void guardarCuenta(String print, String name){
          
-         String nombreArchivo = "hilo "+name;
+         String nombreArchivo = "Registro "+name;
          
         File f = new File(nombreArchivo);
         try{
